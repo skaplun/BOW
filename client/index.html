@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en" ng-app>
+  <head>
+    <title>Chat Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/socket.io/socket.io.js"></script>
+   
+    <style>
+      body {
+        padding-top: 60px;
+      }
+    </style>
+    <script>
+    
+    var channels = {
+          
+          users : {
+            
+            add : 'users.add',
+            update : 'users.update',
+            get : 'users.get'
+            
+          },
+          
+          match : 'matchMake',
+          game : 'game'
+          
+    };
+
+    function send(socket, channel, message){
+            return socket.emit(channel, message);
+    }
+      
+    function listen(socket, channel, cb){
+        return socket.on(channel, cb)
+    }
+        
+        
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    
+    function generatePosition(){
+      
+      return {
+              'boat1': {
+                x : getRandomInt(0, 100),
+                y : getRandomInt(0, 100)
+                
+              }, 
+              'boat2': {
+                x: getRandomInt(0, 100),
+                y : getRandomInt(0, 100)
+              }
+              
+            }
+    
+    }
+    
+    document.addEventListener('DOMContentLoaded', function(){
+      
+      var results = document.getElementById('result');
+      var matchButton = document.getElementById('matchButton');
+      var startGame = document.getElementById('startGame');
+      
+      var socket = io.connect();
+      
+        
+      var currentMatch;
+       
+        
+      results.innerHTML += '<div>before connection</div>';
+        
+      socket.on('connect', function () {
+         results.innerHTML += '<div>connection started</div>';
+      });
+      
+      socket.on(channels.match, function(data) {
+        results.innerHTML += '<div> connected to: ' + data.matchId + '</div>';
+        currentMatch = data.matchId;
+      })
+        
+      socket.on(channels.game, function(data) {
+        
+        var pos = data.position
+
+        if (data.position) {
+          
+          results.innerHTML += '<div>'  + data.response + '</div>';
+          results.innerHTML += '<div> got - x: ' + pos.boat1.x + ', y: ' + pos.boat1.y + ', x2: ' + pos.boat2.x + ', y2: ' + pos.boat2.y + '</div>';
+          
+        } else {
+          
+          results.innerHTML += '<div>' + data.response + '</div>';
+          results.innerHTML += '<div>' + data.text + '</div>';
+          
+        }
+         
+      })
+          
+      matchButton.addEventListener('click', function(){
+        
+        send(socket, channels.match, {});
+        
+      })
+          
+      startGame.addEventListener('click', function() {
+        var pos = generatePosition();
+        
+          send(socket, channels.game, {
+            matchId : currentMatch, 
+            position : pos
+            
+          });
+            
+        results.innerHTML += '<div>sent - x: ' + pos.boat1.x + ', y: ' + pos.boat1.y + 'x2: ' + pos.boat2.x + ', y2: ' + pos.boat2.y + '</div>'; 
+
+          
+      });
+        
+        
+        
+        
+    })
+     
+        
+        
+    </script>
+  </head>
+  <body>
+    
+    
+      
+  <div id="result"></div>
+    
+    <button id="matchButton">match make</button>
+    
+     <button id="startGame">game loop</button>
+     
+     
+     
+  
+  </body>
+</html>
