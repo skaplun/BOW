@@ -59,15 +59,15 @@ io.on('connection', function (socket) {
     });
     
     
-    // get(socket, channels.users.add, addUser)
-    // get(socket, channels.users.update, updateUser)
-    // get(socket, channels.users.get, getUser)
+    // listen(socket, channels.users.add, addUser)
+    // listen(socket, channels.users.update, updateUser)
+    // listen(socket, channels.users.get, getUser)
     
-    get(socket, channels.match, function(data){
+    listen(socket, channels.match, function(data){
       matchMake(socket, data);
     });
     
-    get(socket, channels.game, function(data) {
+    listen(socket, channels.game, function(data) {
         gameMake(socket, data);
     });
     
@@ -227,9 +227,9 @@ function guid() {
     s4() + '-' + s4() + s4() + s4();
 }
 
-function get(socket, channel, cb) {
+function listen(socket, channel, cb) {
     return socket.on(channel, cb)
-}
+};
 
 function sendToSocket(socket, channel, message) {
       return socket.emit(channel, message);
