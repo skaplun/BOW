@@ -32,18 +32,26 @@ Channels
  ```
    
     
-SEND - send message to backend along a set channel.
+Send - send message to backend along a set channel.
 
 ```
- function send(socket, channel, message){
-            return socket.emit(channel, message);
+    @socket  - {Object} : Socket 
+    @channel - {String}
+    @cb      - {Function}  
+    
+    function send(socket, channel, message){
+        return socket.emit(channel, message);
     }
 ```
 
-GET - listen
+Listen - listen to a channel using callback sent as 3rd argument
 
 
 ```
+    @socket  - {Object} : Socket 
+    @channel - {String}
+    @cb      - {Function}  
+    
     function listen(socket, channel, cb){
         return socket.on(channel, cb)
     }
