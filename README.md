@@ -1,5 +1,16 @@
 
 
+Get started:
+ 1. install nodejs + npm
+ 2. git clone repository to location
+ 3. go to location in terminal
+ 4. enter commands:
+    1. npm install
+    2. node server.js
+ 
+
+navigate to localhost and start the fun
+
 
 Channels
     
