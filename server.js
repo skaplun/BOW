@@ -55,7 +55,9 @@ io.on('connection', function (socket) {
     
 
     socket.on('disconnect', function () {
+      
         disconnect(socket);
+        
     });
     
     
@@ -64,11 +66,15 @@ io.on('connection', function (socket) {
     // listen(socket, channels.users.get, getUser)
     
     listen(socket, channels.match, function(data){
+      
       matchMake(socket, data);
+      
     });
     
     listen(socket, channels.game, function(data) {
+      
         gameMake(socket, data);
+        
     });
     
     
