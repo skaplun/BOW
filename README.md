@@ -3,15 +3,15 @@
 
 Channels
     
-    USERS
+
     users.add - add new users
     users.update - update user details
     users.get - login user
     
-    MATCH
+
     match - enter matches pool
     
-    GAME
+
     game - get coords for match
     
  
