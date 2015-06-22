@@ -109,14 +109,11 @@
           socket.emit(channels.match, {status: 'join'});
           results.innerHTML += '<div> sent join </div>';
         }, 300);
-        setTimeout(function(){
-          socket.emit(channels.match, {status: 'die'});
-          results.innerHTML += '<div> sent leave </div>';
-        }, 300);
-        setTimeout(function(){
-          socket.emit(channels.match, {status: 'join'});
-          results.innerHTML += '<div> sent join </div>';
-        }, 300);
+        // setTimeout(function(){
+        //   socket.emit(channels.match, {status: 'die'});
+        //   results.innerHTML += '<div> sent leave </div>';
+        // }, 300);
+     
         
       })
           
