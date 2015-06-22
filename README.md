@@ -46,7 +46,8 @@ client side api
       1. send
          1. coords msg: { matchId : serial, position : coords obj }
      2. listen to coords msg
-        1 coords response: {response: 'ok', position:  opponent's coords obj}
+        1. coords response: {response: 'ok', position:  opponent's coords obj}
+        2. error response: {response: 'error', text: error explanation}
 
 
 server throws error and terminates game if one side sends two turns in a row
