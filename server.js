@@ -73,7 +73,7 @@ io.on('connection', function (socket) {
     
     listen(socket, channels.game, function(data) {
       
-        gameMake(socket, data);
+      gameMake(socket, data);
         
     });
     
@@ -82,37 +82,39 @@ io.on('connection', function (socket) {
 
 
 
-function matchMake(socket) {
-  
+function matchMake(socket, data) {
   var obj, matchId;
-  
-
-  waitingSockets.push(socket);
-  
-  if (waitingSockets.length < 2) {
-    
-    return socket.emit(channels.match, { response: 'ok', matchId: 'please Wait' });
-    
-  } else {
-    
-    var players = getRandomSubarray(waitingSockets, 2);
-    
-    obj = {};
-    matchId = guid();
-    obj['players'] = players;
-    obj['moves'] = {};
-    matches[matchId] = obj;
-    
-    players.forEach(function(player) {
-      
-        safeSplice(waitingSockets, player);
-        
-        return sendToSocket(player, channels.match, { response: 'ok', matchId: matchId });
-        
-    })
-    
+  if(data.status === 'die') {
+    disconnect(socket);
+    socket.emit(channels.match, {response: 'ok'})
   }
-  
+  else if(data.status === 'join') {
+    waitingSockets.push(socket);
+    
+    if (waitingSockets.length < 2) {
+      
+      return socket.emit(channels.match, { response: 'ok', matchId: '0' });
+      
+    } else {
+      
+      var players = getRandomSubarray(waitingSockets, 2);
+      
+      obj = {};
+      matchId = guid();
+      obj['players'] = players;
+      obj['moves'] = {};
+      matches[matchId] = obj;
+      
+      players.forEach(function(player) {
+        
+          safeSplice(waitingSockets, player);
+          
+          return sendToSocket(player, channels.match, { response: 'ok', matchId: matchId });
+          
+      })
+      
+    }
+  }
 }
 
 function gameMake(socket, data) {

@@ -27,20 +27,15 @@
           
     };
 
-    function send(socket, channel, message){
-            return socket.emit(channel, message);
-    }
       
-    function listen(socket, channel, cb){
-        return socket.on(channel, cb)
-    }
         
-        
-    function getRandomInt(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
+    
     
     function generatePosition(){
+      
+      function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
       
       return {
               'boat1': {
@@ -71,13 +66,23 @@
         
       results.innerHTML += '<div>before connection</div>';
         
+      
       socket.on('connect', function () {
          results.innerHTML += '<div>connection started</div>';
       });
       
       socket.on(channels.match, function(data) {
-        results.innerHTML += '<div> connected to: ' + data.matchId + '</div>';
-        currentMatch = data.matchId;
+
+        if(data.matchId === '0'){
+          results.innerHTML += '<div> response is ' + data.response +' , now please wait for matchup</div>';
+        }
+        else if(!!data.matchId){
+          currentMatch = data.matchId;
+          results.innerHTML += '<div> response is ' + data.response +' and id is: ' + data.matchId + '</div>';
+        }else{
+          results.innerHTML += '<div> response is ' + data.response +' , you are no longer matchmaking</div>';
+        }
+        
       })
         
       socket.on(channels.game, function(data) {
@@ -100,18 +105,28 @@
           
       matchButton.addEventListener('click', function(){
         
-        send(socket, channels.match, {});
+        setTimeout(function(){
+          socket.emit(channels.match, {status: 'join'});
+          results.innerHTML += '<div> sent join </div>';
+        }, 300);
+        setTimeout(function(){
+          socket.emit(channels.match, {status: 'die'});
+          results.innerHTML += '<div> sent leave </div>';
+        }, 300);
+        setTimeout(function(){
+          socket.emit(channels.match, {status: 'join'});
+          results.innerHTML += '<div> sent join </div>';
+        }, 300);
         
       })
           
       startGame.addEventListener('click', function() {
         var pos = generatePosition();
         
-          send(socket, channels.game, {
+          socket.emit(channels.game, {
             matchId : currentMatch, 
             position : pos
-            
-          });
+          })
             
         results.innerHTML += '<div>sent - x: ' + pos.boat1.x + ', y: ' + pos.boat1.y + 'x2: ' + pos.boat2.x + ', y2: ' + pos.boat2.y + '</div>'; 
 
